@@ -14,6 +14,7 @@ import spray.json._
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
+import scala.io.StdIn
 
 
 trait JsonSupport extends DefaultJsonProtocol {
@@ -73,11 +74,12 @@ object Main extends App with JsonSupport {
 
   val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 8080)
   var counter = new AtomicInteger
-  //println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
-  //Console.readLine() // for the future transformations
-  //bindingFuture
-  //.flatMap(_.unbind()) // trigger unbinding from the port
-  //.onComplete(_ ⇒ system.terminate()) // and shutdown when done
+
+  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+  StdIn.readLine() // let it run until user presses return
+  bindingFuture
+    .flatMap(_.unbind()) // trigger unbinding from the port
+    .onComplete(_ ⇒ system.terminate()) // and shutdown when done
 
   def getFileSource(filename: String) = {
     FileIO.fromFile(new File(filename))
