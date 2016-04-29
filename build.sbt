@@ -12,7 +12,8 @@ lazy val root = (project in file("."))
       "com.typesafe.akka" %% "akka-http-xml-experimental" % akkaVersion,
       "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion
     ),
-    (managedClasspath in Runtime) += (packageBin in Assets).value
+    unmanagedResourceDirectories in Compile += (WebKeys.public in Assets).value
+    //(managedClasspath in Runtime) += (packageBin in Assets).value
   )
 
 lazy val compileCoffeeScriptTask = taskKey[Seq[File]]("Compile .coffee files.")
@@ -20,11 +21,11 @@ compileCoffeeScriptTask := WebKeys.assets.value :: Nil
 
 lazy val akkaVersion = "2.4.4"
 
-/*
-lazy val testModule = {
-  Project("testModule", file("testModule"))
-    .settings()
+lazy val someTask = taskKey[Unit]("")
+someTask := {
 }
-*/
+
+// "assets" task is run before "run" task
+run <<= (run in Compile) dependsOn (WebKeys.assets in Assets)
 
 
