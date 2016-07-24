@@ -1,4 +1,3 @@
-
 lazy val root = (project in file("."))
   .enablePlugins(SbtWeb, sbtdocker.DockerPlugin, JavaServerAppPackaging)
   .settings(
@@ -10,10 +9,11 @@ lazy val root = (project in file("."))
       "com.typesafe.akka" %% "akka-http-xml-experimental" % akkaVersion,
       "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion
     ),
-    unmanagedResourceDirectories in Compile += (WebKeys.public in Assets).value
+    //unmanagedResourceDirectories in Compile += (WebKeys.public in Assets).value,
+    managedClasspath in Runtime += (packageBin in Assets).value
   )
 
-lazy val akkaVersion = "2.4.4"
+lazy val akkaVersion = "2.4.8"
 
 dockerfile in docker := {
   val appDir: File = stage.value
@@ -31,9 +31,7 @@ dockerfile in docker := {
 }
 
 // "assets" task is run before "run" task
-run <<= (run in Compile) dependsOn (WebKeys.assets in Assets)
+//run <<= (run in Compile) dependsOn (WebKeys.assets in Assets)
 
 // same as above
-packageBin <<= (packageBin in Compile) dependsOn (WebKeys.assets in Assets)
-
-
+//packageBin <<= (packageBin in Compile) dependsOn (WebKeys.assets in Assets)
